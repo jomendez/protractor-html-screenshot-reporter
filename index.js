@@ -2,6 +2,7 @@ var util = require('./lib/util')
 	, mkdirp = require('mkdirp')
 	, _ = require('underscore')
 	, path = require('path');
+	, email = require('emailjs');
 
 /** Function: defaultPathBuilder
  * This function builds paths for a screenshot file. It is appended to the
@@ -112,10 +113,11 @@ function ScreenshotReporter(options) {
 	this.docName = options.docName || 'report.html';
 	this.metaDataBuilder = options.metaDataBuilder || defaultMetaDataBuilder;
 	this.preserveDirectory = options.preserveDirectory || false;
-	this.takeScreenShotsForSkippedSpecs =
-		options.takeScreenShotsForSkippedSpecs || false;
-		this.takeScreenShotsOnlyForFailedSpecs =
- 		options.takeScreenShotsOnlyForFailedSpecs || false;
+	this.takeScreenShotsForSkippedSpecs = options.takeScreenShotsForSkippedSpecs || false;
+	this.takeScreenShotsOnlyForFailedSpecs = options.takeScreenShotsOnlyForFailedSpecs || false;
+	this.emailConfig = options.emailConfig || {};
+
+
  	this.finalOptions = {
  		takeScreenShotsOnlyForFailedSpecs: this.takeScreenShotsOnlyForFailedSpecs,
  		takeScreenShotsForSkippedSpecs: this.takeScreenShotsForSkippedSpecs,
@@ -124,7 +126,8 @@ function ScreenshotReporter(options) {
  		baseDirectory: this.baseDirectory,
  		docTitle: this.docTitle,
  		docName: this.docName,
- 		cssOverrideFile: this.cssOverrideFile
+ 		cssOverrideFile: this.cssOverrideFile,
+ 		emailConfig: this.emailConfig
  	};
 
  	if(!this.preserveDirectory){
@@ -191,8 +194,41 @@ function reportSpecResults(spec) {
 					util.storeMetaData(metaData, metaDataPath);
 				}
 			});
+
+
+
+			//self.finalOptions.emailConfig
 		});
 	});
+
+	
+
+
+
+	var server     = email.server.connect({
+   user:    "pepe_jmendez23@hotmail.com", 
+   password:"josemendez2012", 
+   host:    "smtp-mail.outlook.com", 
+   ssl:     true
+});
+
+// send the message and get a callback with an error or details of the message that was sent
+server.send({
+   text:    "i hope this works", 
+   from:    "you <pepe_jmendez23@hotmail.com>", 
+   to:      "someone <jomendezdev@gmail.com>",
+   cc:      "",
+   subject: "testing emailjs"
+}, function(err, message) { console.log(err || message); });
+
+
+			//self.finalOptions.emailConfig
+
+
+
+
+
+
 
 };
 
